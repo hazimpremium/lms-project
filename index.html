@@ -1,58 +1,266 @@
+<!-- ===========================
+ COMPLETE BASIC LMS (3 FILES IN 1 DOCUMENT)
+ index.html + style.css + app.js
+=========================== -->
+
+<!-- ===========================
+ 1) index.html
+=========================== -->
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Simple LMS</title>
-    <style>
-        body { font-family: Arial; padding: 20px; background: #f2f2f2; }
-        .box { background: white; max-width: 350px; margin: auto; padding: 20px; border-radius: 10px; }
-        input, button {
-            width: 100%; padding: 10px; margin-top: 10px;
-            border-radius: 6px; border: 1px solid #ccc;
-        }
-        button { background: black; color: white; cursor: pointer; }
-        .course { padding: 10px; background: #eee; margin-top: 10px; border-radius: 6px; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Complete Basic</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
-<div id="loginPage" class="box">
-    <h2>Login</h2>
-    <input id="user" type="text" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p>Default: admin / 1234</p>
-</div>
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page active">
+        <div class="card">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p class="hint">Default: admin / 1234</p>
+        </div>
+    </div>
 
-<!-- LMS PAGE -->
-<div id="lmsPage" class="box" style="display:none;">
-    <h2>Modul LMS</h2>
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="page">
+        <h1 class="title">Senarai Modul</h1>
 
-    <div class="course">Asas Komputer</div>
-    <div class="course">Asas Rangkaian</div>
-    <div class="course">Microsoft Office</div>
+        <div class="course" onclick="openModule(1)">
+            <h3>Asas Komputer</h3>
+            <div class="progress" id="progress1"></div>
+        </div>
 
-    <button style="background:red;" onclick="logout()">Logout</button>
-</div>
+        <div class="course" onclick="openModule(2)">
+            <h3>Asas Rangkaian</h3>
+            <div class="progress" id="progress2"></div>
+        </div>
+
+        <div class="course" onclick="openModule(3)">
+            <h3>Microsoft Office</h3>
+            <div class="progress" id="progress3"></div>
+        </div>
+
+        <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- MODULE PAGE -->
+    <div id="modulePage" class="page">
+        <button class="back" onclick="goBack()">← Back</button>
+        <h1 id="moduleTitle"></h1>
+        <p id="moduleContent"></p>
+
+        <button onclick="completeLesson()">Tandakan Selesai</button>
+        <button onclick="openQuiz()" style="background:#444;">Buka Kuiz</button>
+    </div>
+
+    <!-- QUIZ PAGE -->
+    <div id="quizPage" class="page">
+        <button class="back" onclick="closeQuiz()">← Back</button>
+        <h2 id="quizTitle"></h2>
+
+        <div id="quizBox"></div>
+        <button onclick="submitQuiz()">Hantar Jawapan</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
+
+<!-- ===========================
+ 2) style.css
+=========================== -->
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f4f4f4;
+}
+
+.page { display: none; padding: 20px; }
+.active { display: block; }
+
+.card {
+    background: white;
+    max-width: 350px;
+    margin: 60px auto;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+input, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button { cursor: pointer; font-weight: bold; }
+button:hover { opacity: 0.9; }
+
+.title { text-align: center; }
+
+.course {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+}
+
+.progress {
+    height: 12px;
+    background: #ddd;
+    margin-top: 8px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress::after {
+    content: "";
+    display: block;
+    height: 100%;
+    background: #4caf50;
+    width: 0%;
+}
+
+.logout {
+    background: red;
+    color: white;
+    margin-top: 20px;
+}
+
+.back {
+    background: #ccc;
+    width: auto;
+}
+
+#quizBox div { margin-bottom: 15px; }
+</style>
+
+
+<!-- ===========================
+ 3) app.js
+=========================== -->
 
 <script>
+let currentModule = 0;
+let progress = JSON.parse(localStorage.getItem("progress")) || {
+    1: 0,
+    2: 0,
+    3: 0
+};
+
+const modules = {
+    1: {
+        title: "Asas Komputer",
+        content: "Pengenalan kepada komputer, hardware, software dan fungsinya.",
+        quiz: [
+            { q: "Apakah CPU?", a: "Otak komputer" },
+            { q: "Apakah RAM digunakan untuk?", a: "Menyimpan data sementara" }
+        ]
+    },
+    2: {
+        title: "Asas Rangkaian",
+        content: "Belajar IP address, router, switch dan konsep rangkaian.",
+        quiz: [
+            { q: "Apa maksud IP?", a: "Internet Protocol" },
+            { q: "Router digunakan untuk?", a: "Menghubung rangkaian" }
+        ]
+    },
+    3: {
+        title: "Microsoft Office",
+        content: "Belajar Word, Excel dan PowerPoint asas.",
+        quiz: [
+            { q: "Apakah fungsi Excel?", a: "Kira dan analisis data" }
+        ]
+    }
+};
+
 function login() {
-    let u = document.getElementById("user").value;
-    let p = document.getElementById("pass").value;
+    let u = document.getElementById("username").value;
+    let p = document.getElementById("password").value;
 
     if (u === "admin" && p === "1234") {
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("lmsPage").style.display = "block";
+        showPage("dashboard");
+        updateProgress();
     } else {
-        alert("Username atau password salah!");
+        alert("Salah login!");
     }
 }
 
 function logout() {
-    document.getElementById("lmsPage").style.display = "none";
-    document.getElementById("loginPage").style.display = "block";
+    showPage("loginPage");
+}
+
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function openModule(num) {
+    currentModule = num;
+    document.getElementById("moduleTitle").innerText = modules[num].title;
+    document.getElementById("moduleContent").innerText = modules[num].content;
+    showPage("modulePage");
+}
+
+function goBack() { showPage("dashboard"); }
+
+function completeLesson() {
+    progress[currentModule] = 100;
+    localStorage.setItem("progress", JSON.stringify(progress));
+    updateProgress();
+    alert("Modul ditandakan selesai!");
+}
+
+function updateProgress() {
+    for (let i = 1; i <= 3; i++) {
+        document.querySelector(`#progress${i} .progress::after`);
+    }
+
+    document.querySelector(`#progress1`).children[0].style = `width: ${progress[1]}%`;
+}
+
+function openQuiz() {
+    const q = modules[currentModule].quiz;
+    document.getElementById("quizTitle").innerText = "Kuiz " + modules[currentModule].title;
+
+    let html = "";
+    q.forEach((item, i) => {
+        html += `<div>
+            <p><b>${item.q}</b></p>
+            <input id="q${i}" placeholder="Jawapan">
+        </div>`;
+    });
+
+    document.getElementById("quizBox").innerHTML = html;
+    showPage("quizPage");
+}
+
+function closeQuiz() { showPage("modulePage"); }
+
+function submitQuiz() {
+    const q = modules[currentModule].quiz;
+    let score = 0;
+
+    q.forEach((item, i) => {
+        let ans = document.getElementById(`q${i}`).value.toLowerCase();
+        if (ans === item.a.toLowerCase()) score++;
+    });
+
+    alert("Markah: " + score + " / " + q.length);
 }
 </script>
-
-</body>
-</html>
