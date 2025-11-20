@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- LOGIN PAGE -->
     <div id="loginPage" class="page active">
         <div class="card">
             <h2>Login</h2>
@@ -18,7 +19,10 @@
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div id="dashboard" class="page">
+        <!-- BUTANG BACK BARU DI SINI UNTUK KELUAR (LOGOUT) -->
+        <button class="back" onclick="logout()" style="width: auto; margin-right: auto; margin-left: 0;">← Logout</button>
         <h1 class="title">Senarai Modul</h1>
 
         <div class="course" onclick="openModule(1)">
@@ -39,7 +43,9 @@
         <button class="logout" onclick="logout()">Logout</button>
     </div>
 
+    <!-- MODULE PAGE -->
     <div id="modulePage" class="page">
+        <!-- BUTANG BACK SUDAH ADA, TIADA PERUBAHAN -->
         <button class="back" onclick="goBack()">← Back</button>
         <h1 id="moduleTitle"></h1>
         <p id="moduleContent"></p>
@@ -48,7 +54,9 @@
         <button onclick="openQuiz()" style="background:#444;">Buka Kuiz</button>
     </div>
 
+    <!-- QUIZ PAGE -->
     <div id="quizPage" class="page">
+        <!-- BUTANG BACK SUDAH ADA, TIADA PERUBAHAN -->
         <button class="back" onclick="closeQuiz()">← Back</button>
         <h2 id="quizTitle"></h2>
 
