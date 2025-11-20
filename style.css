@@ -2,7 +2,7 @@ body {
 margin: 0;
 font-family: Arial;
 background: #f4f4f4;
-padding-bottom: 50px; /* Ruang untuk logout button */
+padding-bottom: 50px;
 }
 
 /* Mengawal paparan halaman */
@@ -36,7 +36,7 @@ padding: 12px;
 margin-top: 15px;
 border-radius: 8px;
 border: 1px solid #ddd;
-box-sizing: border-box; /* Penting untuk padding */
+box-sizing: border-box;
 }
 
 button {
@@ -92,14 +92,14 @@ overflow: hidden;
 content: "";
 display: block;
 height: 100%;
-background: #28a745; /* Warna hijau untuk progress /
-width: var(--progress-width, 0%); / Guna CSS Variable */
+background: #28a745;
+width: var(--progress-width, 0%);
 transition: width 0.5s ease;
 }
 
-/* Buttons /
+/* Buttons */
 .logout {
-background: #dc3545; / Merah untuk logout */
+background: #dc3545;
 color: white;
 margin-top: 30px;
 width: 150px;
@@ -108,17 +108,26 @@ margin-left: auto;
 margin-right: auto;
 }
 
+/* GAYA KHAS UNTUK BUTANG BACK /
 .back {
 background: #6c757d;
 color: white;
 width: 120px;
-margin-bottom: 20px;
+padding: 8px 15px; / Kurangkan padding sikit /
+margin-bottom: 20px; / Jarakkan dari tajuk /
+display: inline-block; / Pastikan ia tidak mengambil lebar penuh */
+text-align: left;
+border: none;
 }
 .back:hover {
 background: #5a6268;
 }
 
-/* Gaya untuk Quiz/Module Page */
+/* Gaya untuk Quiz/Module Page /
+#modulePage h1, #quizPage h2 {
+margin-top: 10px; / Kurangkan jarak dari atas */
+}
+
 #modulePage button:not(.back), #quizPage button:not(.back) {
 width: auto;
 padding: 10px 20px;
