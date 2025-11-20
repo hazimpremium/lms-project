@@ -116,7 +116,8 @@ function updateProgress() {
     for (let i = 1; i <= 3; i++) {
         const progressBar = document.getElementById(`progress${i}`);
         if (progressBar) {
-            // Menggunakan CSS Variable untuk mengemaskini lebar progress bar
+            // Menggunakan CSS Variable --progress-width untuk mengemaskini lebar progress bar
+            // CSS Variable ini ditakrifkan dalam style.css
             progressBar.style.setProperty('--progress-width', `${progress[i]}%`);
         }
     }
